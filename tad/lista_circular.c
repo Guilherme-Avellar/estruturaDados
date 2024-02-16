@@ -13,7 +13,7 @@ struct lista {
 };
 
 int buscar_lc(lista* l, int valor) { 
-    if(l == NULL || esta_vazia_lc(l))
+    if(l == NULL || vazia_lc(l))
         return -1;
 
     // Elementos do vetor
@@ -52,7 +52,7 @@ lista* criar_lc(int capacidade) {
     return temp;
 }
 
-int esta_cheia_lc(lista* l) {
+int cheia_lc(lista* l) {
     if(l == NULL)
         return NULL_ERROR;
 
@@ -62,7 +62,7 @@ int esta_cheia_lc(lista* l) {
     return FALSO;
 }
 
-int esta_vazia_lc(lista* l) {
+int vazia_lc(lista* l) {
     if(l == NULL)
         return NULL_ERROR;
 
@@ -78,7 +78,7 @@ int esvaziar_lc(lista* l) {
 }
 
 void exibir_lc(lista* l) { 
-    if(l == NULL || esta_vazia_lc(l))
+    if(l == NULL || vazia_lc(l))
         return;
 
     int i, id_pos = l->inicio;
@@ -95,25 +95,20 @@ void exibir_lc(lista* l) {
     // Elementos do vetor
     id_pos = l->inicio;
     for(i = 1; i <= tamanho_lc(l); i++) {
-        printf("%d ", l->dados[id_pos]);
-        id_pos = id_pos + 1;
+        printf("%d ", l->dados[id_pos++]);
         if(id_pos == capacidade_lc(l))
             id_pos = 0;
     }
 }
 
-/*void exibir_n_vezes_lc(lista* l, int n) { 
-    // TODO - Exercício
-}Anderson ja tinha posto, esse troll*/
-
 int inserir_fim_lc(lista* l, int e)  {
-    if(esta_cheia_lc(l))
+    if(cheia_lc(l))
         return FALSO;
 
     if(l == NULL)
         return NULL_ERROR;
 
-    if(esta_vazia_lc(l))
+    if(vazia_lc(l))
         l->inicio = l->fim = 0;
 
     l->dados[l->fim] = e;
@@ -134,7 +129,7 @@ int remover_inicio_lc(lista* l, int *v) {
     if(l == NULL || v == NULL)
         return NULL_ERROR;
 
-    if(esta_vazia_lc(l))
+    if(vazia_lc(l))
         return FALSO;
 
     *v = l->dados[l->inicio];
@@ -157,21 +152,4 @@ int tamanho_lc(lista* l) {
         return l->fim - l->inicio;
     else
         return l->fim - l->inicio + capacidade_lc(l);
-}
-
-//exercicio 5 AI3
-
-void exibir_n_vezes_lc(lista* l, int n){
-    int id_pos, contador = 0;
-
-    while(contador < n){
-        id_pos = l->inicio;
-        for(int i = 1; i <= tamanho_lc(l); i++) {
-            printf("%d ", l->dados[id_pos]);
-            id_pos = id_pos + 1;
-            if(id_pos == capacidade_lc(l))
-                id_pos = 0;
-        }
-        contador += contador;
-    }
 }

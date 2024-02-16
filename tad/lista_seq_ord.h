@@ -1,9 +1,10 @@
 // Interface da lista
 
-//--------------------- DEFINIÇÃO DO TIPO ---------------------
+// ------------------------- Tipo -------------------------
 typedef struct lst lista;
 
-//------------------ PROTÓTIPO DAS OPERAÇÕES-------------------
+// ------------------ Operações da lista ------------------
+
 /*
 Entrada: lista L, elemento e a ser procurado na lista
 Saída: sucesso (verdadeiro) ou falha (falso) na operação
@@ -11,8 +12,14 @@ Saída: sucesso (verdadeiro) ou falha (falso) na operação
 int buscar_seq(lista *L, int e);
 
 /*
+Entrada: lista L, extremidades esquerda (e) e direita (d) do vetor
+Saída: sucesso (verdadeiro) ou falha (falso) na operação
+*/
+int busca_binaria(lista *L, int valor, int e, int d);
+
+/*
 Entrada: lista L
-Saída: capacidade da lista (número máximo de itens)
+Saída: capacidade da lista
 */
 int capacidade(lista *L);
 
@@ -20,16 +27,16 @@ int capacidade(lista *L);
 Entrada: lista L
 Saída: verdadeiro se estiver cheia; falso caso contrário
 */
-int cheia(lista *L);
+int cheia(lista *L);    // 0 => falso; != 0 => verdadeiro
 
 /*
 Entrada: capacidade da lista
-Saída: endereço da lista criada
+Saída: retorna a lista criada
 */
-lista* criar(int capacidade);
+lista* criar_lista(int capacidade);
 
 /*
-Entrada: lista L
+Entrada: lista L a ser exibida
 Saída: Não tem
 */
 void exibir(lista *L);
@@ -38,44 +45,19 @@ void exibir(lista *L);
 Entrada: lista L, elemento e a ser inserido
 Saída: sucesso (verdadeiro) ou falha (falso) na operação
 */
-int inserir_fim(lista *L, int e);
+int inserir(lista *L, int e);
 
 /*
-Entrada: lista L, elemento e a ser inserido
-Saída: sucesso ou falha na operação
-*/
-int inserir_inicio(lista *L, int e);
-
-/*
-Entrada: lista L, elemento e a ser inserido, k-ésima posição onde o
-elemento e será inserido
-Saída: sucesso (verdadeiro) ou falha (falso) na operação
-*/
-int inserir_meio(lista *L, int e, int k);
-
-/*
-Entrada: lista L
+Entrada: lista L a ser liberada
 Saída: Não tem
 */
 void liberar(lista *L);
 
 /*
-Entrada: lista L
-Saída: sucesso ou falha na operação
-*/
-int remover_fim(lista *L);
-
-/*
-Entrada: lista L
-Saída: sucesso ou falha na operação
-*/
-int remover_inicio(lista *L);
-
-/*
 Entrada: lista L, k-ésima posição na qual um elemento será removido
 Saída: sucesso (verdadeiro) ou falha (falso) na operação
 */
-int remover_meio(lista *L, int k);
+int remover(lista *L, int k);
 
 /*
 Entrada: lista L

@@ -1,208 +1,209 @@
-/** @file lista_seq.c
- *  @brief Implementação de uma lista linear sequencial
- *
- *  Este arquivo contém a implementação do tipo e das funções definidas
- *  para uma lista linear sequencial.
- *
- *  @author Anderson Grandi Pires
- *  @bug Nenhum bug conhecido
- */
-
 #include <stdlib.h>
 #include <stdio.h>
-#include "lista_seq.h"
+#include "lista.h"
 
 #define VERDADEIRO 1
 #define FALSO 0
 #define ERRO -1
 
+// Implementação do tipo
 struct lst {
-    int qtde, capacidade;
-    int *dados;
+    int *dados,
+        cap,
+        qtde;
 };
 
-int buscar_lst(lista *l, int valor) {
-    if(l == NULL || esta_vazia_lst(l))
-        return ERRO;
-    
-    int i;
-    for(i = 0; i < l->qtde; i++)
-        if(l->dados[i] == valor)
-            return i+1;
-    
-    return ERRO;
-}
-
-int capacidade_lst(lista *l) {
-    if(l == NULL)
-        return ERRO;
-
-    return l->capacidade;
-}
-
-lista* criar_lst(int capacidade) {
-    if(capacidade <= 0)
-        return NULL;
-
-    lista *nova = (lista*) calloc(1, sizeof(lista));
-    if(nova == NULL)
-        return NULL;
-
-    nova->qtde = 0;
-    nova->dados = (int*) calloc(capacidade, sizeof(int));
-    if(nova->dados == NULL) {
-        free(nova);
-        return NULL;
-    }
-    nova->capacidade = capacidade;
-
-    return nova;
-}
-
-int esta_vazia_lst(lista *l) {
-    if(l == NULL)
-        return ERRO;
-
-    if(l->qtde == 0)
-        return VERDADEIRO;
-    else
+/*
+Entrada: lista L, elemento e a ser procurado na lista
+Saída: sucesso (verdadeiro) ou falha (falso) na operação
+*/
+int buscar_seq(lista *L, int e) {
+    if(L==NULL || vazia(L))
         return FALSO;
-}
-
-int esta_cheia_lst(lista *l) {
-    if(l == NULL)
-        return ERRO;
-
-    return l->qtde == l->capacidade;
-}
-
-void exibir_lst(lista *l) {
-    if(l == NULL || esta_vazia_lst(l))
-        return;
     
-    int i;
-    for(i = 0; i < tamanho_lst(l); i++)
-        printf("%d ", l->dados[i]);
-}
-
-int inserir_inicio_lst(lista *l, int valor) {
-    if(l == NULL)
-        return ERRO;
-
-    if(esta_cheia_lst(l))
-        return FALSO;
-
-    int i;
-    for(i = l->qtde; i >= 1; i--)
-        l->dados[i] = l->dados[i-1];
-
-    l->dados[0] = valor;
-    l->qtde++;
-
-    return VERDADEIRO;
-}
-
-static int invalido(lista *l, int posicao) {
-    if(posicao <= 0 || posicao > l->qtde+1)
-        return VERDADEIRO;
+    for(int i = 0; i < tamanho(L); i++)
+        if(L->dados[i] == e)
+            return VERDADEIRO;
     
     return FALSO;
 }
 
-int inserir_meio_lst(lista *l, int valor, int pos) {
-    if(l == NULL)
+int capacidade(lista *L) {
+    if(L == NULL)
+        return 0;
+    
+    return L->cap;
+}
+
+/*
+Entrada: lista L
+Saída: verdadeiro se estiver cheia; falso caso contrário
+*/
+int cheia(lista *L) {
+    if(L == NULL)
         return ERRO;
+    
+    /*if(L->qtde == L->cap)
+        return VERDADEIRO;
+    
+    return FALSO;*/
+    return L->qtde == L->cap;
+}
 
-    if(esta_cheia_lst(l) || invalido(l, pos))
+/*
+Entrada: capacidade da lista
+Saída: endereço da lista criada
+*/
+lista* criar(int capacidade) {
+    if(capacidade <= 0)
+        return NULL;
+    
+    lista *l = (lista*) malloc(sizeof(lista));
+    if(l == NULL)
+        return NULL;
+    
+    l->dados = (int*) calloc(capacidade, sizeof(int));
+    if(l->dados == NULL) {
+        free(l);
+        return NULL;
+    }
+
+    l->qtde = 0;
+    l->cap = capacidade;
+
+    return l;
+}
+
+/*
+Entrada: lista L
+Saída: Não tem
+*/
+void exibir(lista *L) {
+    if(L==NULL || vazia(L))
+        return;
+    
+    for(int i = 0; i < tamanho(L); i++)
+        printf("%d ", L->dados[i]);
+}
+
+/*
+Entrada: lista L, elemento e a ser inserido
+Saída: sucesso (verdadeiro) ou falha (falso) na operação
+*/
+int inserir_fim(lista *L, int e) {
+    if(L == NULL || cheia(L))
         return FALSO;
-
-    int i;
-    for(i = l->qtde; i >= pos; i--)
-        l->dados[i] = l->dados[i-1];
-
-    l->dados[pos-1] = valor;
-    l->qtde++;
+    
+    L->dados[L->qtde] = e;
+    L->qtde++;
 
     return VERDADEIRO;
 }
 
-int inserir_fim_lst(lista *l, int valor) {
-    if(l == NULL)
-        return ERRO;
-    
-    if(esta_cheia_lst(l))
-        return FALSO;
-
-    l->dados[l->qtde] = valor;
-    l->qtde++;
-
-    return VERDADEIRO;
-}
-
-int liberar_lst(lista **l) {
-    if(l == NULL || *l == NULL)
+/*
+Entrada: lista L, elemento e a ser inserido
+Saída: sucesso ou falha na operação
+*/
+int inserir_inicio(lista *L, int e) {
+    if(L == NULL || cheia(L))
         return FALSO;
     
-    free((*l)->dados);
-    free(*l);
-    *l = NULL;
+    for(int i = L->qtde; i >= 1; i--)
+        L->dados[i] = L->dados[i-1];
+    L->dados[0] = e;
+    L->qtde++;
     
     return VERDADEIRO;
 }
 
-int remover_inicio_lst(lista *l, int *valor_removido) {
-    if(l == NULL)
-        return ERRO;
+/*
+Entrada: lista L, elemento e a ser inserido, k-ésima posição onde o
+elemento e será inserido
+Saída: sucesso (verdadeiro) ou falha (falso) na operação
+*/
+int inserir_meio(lista *L, int e, int k) {
+    if(L == NULL || cheia(L))
+        return FALSO;
+
+    for(int i = L->qtde; i >= k; i--)
+        L->dados[i] = L->dados[i-1];
+    L->dados[k-1] = e;
+    L->qtde++;
     
-    if(esta_vazia_lst(l))
+    return VERDADEIRO;
+}
+
+/*
+Entrada: lista L
+Saída: Não tem
+*/
+void liberar(lista *L) {
+    if(L != NULL)
+        free(L);
+}
+
+/*
+Entrada: lista L
+Saída: sucesso ou falha na operação
+*/
+int remover_fim(lista *L) {
+    if(L == NULL || vazia(L))
         return FALSO;
     
-    *valor_removido = l->dados[0];
-
-    int i;
-    for(i = 0; i < l->qtde-1; i++)
-        l->dados[i] = l->dados[i+1];
-
-    l->qtde--;
+    L->qtde--;
 
     return VERDADEIRO;
 }
 
-int remover_meio_lst(lista *l, int pos, int *valor_removido) {
-    if(l == NULL)
-        return ERRO;
-    
-    if(esta_vazia_lst(l) || invalido(l, pos))
+/*
+Entrada: lista L
+Saída: sucesso ou falha na operação
+*/
+int remover_inicio(lista *L) {
+    if(L == NULL || vazia(L))
         return FALSO;
 
-    *valor_removido = l->dados[pos-1];
+    for(int i = 1; i < tamanho(L); i++)
+        L->dados[i-1] = L->dados[i];
+    L->qtde--;
+    
+    return VERDADEIRO;
+}
 
-    int i;
-    for(i = pos-1; i < l->qtde-1; i++)
-        l->dados[i] = l->dados[i+1];
+/*
+Entrada: lista L, k-ésima posição na qual um elemento será removido
+Saída: sucesso (verdadeiro) ou falha (falso) na operação
+*/
+int remover_meio(lista *L, int k) {
+    if(L == NULL || vazia(L))
+        return FALSO;
 
-    l->qtde--;
+    for(int i = k-1; i <= tamanho(L)-1; i++)
+        L->dados[i] = L->dados[i+1];
+    L->qtde--;
 
     return VERDADEIRO;
 }
 
-int remover_fim_lst(lista *l, int *valor_removido) {
-    if(l == NULL)
-        return ERRO;
+/*
+Entrada: lista L
+Saída: tamanho da lista, ou seja, a quantidade de itens válidos
+presentes na lista
+*/
+int tamanho(lista *L) {
+    if(L == NULL)
+        return 0;
     
-    if(esta_vazia_lst(l))
-        return FALSO;
-    
-    *valor_removido = l->dados[l->qtde-1];
-
-    l->qtde--;
-
-    return VERDADEIRO;
+    return L->qtde;
 }
 
-int tamanho_lst(lista *l) {
-    if(l == NULL)
+/*
+Entrada: lista L
+Saída: verdadeiro se estiver vazia; falso caso contrário
+*/
+int vazia(lista *L) {
+    if(L == NULL)
         return ERRO;
     
-    return l->qtde;
+    return L->qtde == 0;
 }
